@@ -1,0 +1,17 @@
+services:
+  backend:
+    build: .
+    container_name: backend
+    tty: true
+    stdin_open: true
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/src
+    environment:
+      - TZ=UTC
+      - NODE_ENV=development
+      - PORT=3000
+      - HOST=0.0.0.0
+      - LOG_LEVEL=info
+      - APP_KEY=DGFvXF6d4SmvJHSMIx4WFCPZ6N8asozn
