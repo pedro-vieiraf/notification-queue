@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { VideoModule } from './video/video.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NotificationsModule } from './notifications/notifications.module';
 
@@ -25,7 +24,6 @@ import { NotificationsModule } from './notifications/notifications.module';
         },
       }),
     }),
-    VideoModule,
     NotificationsModule,
   ],
 })
