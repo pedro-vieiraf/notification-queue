@@ -1,22 +1,32 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { VideoModule } from './video/video.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
-    BullModule.forRoot({
-      connection: {
-        host: 'redis',
-        port: 6379,
-      },
-      defaultJobOptions: {
-        attempts: 3,
-        removeOnComplete: 1000,
-        removeOnFail: 3000,
-        backoff: 2000,
-      },
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+        },
+        defaultJobOptions: {
+          attempts: 3,
+          removeOnComplete: 1000,
+          removeOnFail: 3000,
+          backoff: 2000,
+        },
+      }),
     }),
     VideoModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
