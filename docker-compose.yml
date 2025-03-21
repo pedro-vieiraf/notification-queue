@@ -18,8 +18,8 @@ services:
       - REDIS_PORT=6379
       - EMAIL_HOST=smtp.gmail.com
       - EMAIL_PORT=587
-      - EMAIL_USER= # Coloque o email que enviará o email aqui.
-      - EMAIL_PASS= # Coloque a senha de aplicativo do Email aqui.
+      - EMAIL_USER=pedrovieirafdev@gmail.com 
+      - EMAIL_PASS=dlvqzfogyesfityv
     depends_on:
       redis:
         condition: service_healthy

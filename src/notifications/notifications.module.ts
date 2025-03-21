@@ -12,6 +12,15 @@ import { NotificationService } from './notifications.service';
     ConfigModule.forRoot(),
     BullModule.registerQueue({
       name: 'notification',
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+        // removeOnComplete: true,
+        // removeOnFail: true,
+      },
     }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],

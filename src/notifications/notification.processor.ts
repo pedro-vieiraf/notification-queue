@@ -14,6 +14,9 @@ export class NotificationProcessor extends WorkerHost {
   async process(job: Job) {
     const { type, recipient, message } = job.data as NotificationDto;
 
+    if (!type || !recipient || !message) {
+      throw new Error('Missing required fields in job data');
+    }
     switch (type) {
       case 'email':
         console.log(`Sending EMAIL to ${recipient}: ${message}`);
@@ -32,13 +35,9 @@ export class NotificationProcessor extends WorkerHost {
           console.log(`Email sent to ${recipient}`);
         } catch (error) {
           console.error(`Failed to send email to ${recipient}:`, error);
+          throw new Error();
         }
 
-        break;
-
-      case 'sms':
-        console.log(`Sending SMS to ${recipient}: ${message}`);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         break;
 
       default:
@@ -48,11 +47,15 @@ export class NotificationProcessor extends WorkerHost {
 
   @OnWorkerEvent('completed')
   onCompleted(job: Job) {
-    console.log(`Notification job ${job.id} COMPLETED`);
+    console.log(
+      `Notification job ${job.id} COMPLETED. Data: ${JSON.stringify(job.data)}`, // Dar mais detalhes na mensagem
+    );
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job) {
-    console.log(`Notification job ${job.id} FAILED`);
+    console.log(
+      `Notification job ${job.id} FAILED. Error: ${job.failedReason}`,
+    );
   }
 }
