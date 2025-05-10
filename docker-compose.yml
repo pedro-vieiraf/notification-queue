@@ -14,4 +14,30 @@ services:
       - PORT=3000
       - HOST=0.0.0.0
       - LOG_LEVEL=info
-      - APP_KEY=DGFvXF6d4SmvJHSMIx4WFCPZ6N8asozn
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+      - EMAIL_USER=pedrovieirafdev@gmail.com 
+      - EMAIL_PASS=dlvqzfogyesfityv
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
